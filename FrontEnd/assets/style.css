@@ -1,0 +1,470 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/** end reset css**/
+.modify-mode-bar {
+	background-color: black;
+	height: 50px;
+	width: 100%;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	z-index: 10;
+	position: fixed;
+	top: 0;
+}
+.modify-mode-bar__icon{
+	filter: invert(1);
+}
+.galery-manager-overlay {
+	position: fixed;
+	background-color: #0000004D;
+	height: 100%;
+	width: 100%;
+	z-index: 9;
+	top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.gallery-manager-window {
+	position: fixed;
+	background-color: white;
+	height: 70%;
+	width: 44%;
+	z-index: 10;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	border-radius: 10px;
+	max-width: 700px;
+	min-width: 550px;
+}
+.hidden {
+	display: none !important;
+}
+body {
+/* 	max-width: 1140px; */
+	margin:auto;
+	font-family: 'Work Sans' ;
+	font-size: 14px;
+	background-color: #FFFEF8;
+}
+header {
+	display: flex;
+	justify-content: space-between;
+	margin: 50px auto;
+	max-width: 1240px;
+}
+main {
+	max-width: 1140px;
+	margin: auto;
+}
+section {
+	margin: 50px 0
+}
+
+h1{
+	display: flex;
+	flex-direction: column;
+	font-family: 'Syne';
+	font-size: 22px;
+	font-weight: 800;
+	color: #B1663C
+}
+
+h1 > span {
+	font-family: 'Work Sans';
+	font-size:10px;
+	letter-spacing: 0.1em;
+;
+}
+
+h2{
+	font-family: 'Syne';
+	font-weight: 700;
+	font-size: 30px;
+	color: #1D6154
+}
+nav ul {
+	display: flex;
+	align-items: center;
+	list-style-type: none;
+
+}
+nav li {
+	padding: 0 10px;
+	font-size: 1.2em;
+}
+
+li:hover {
+	color: #B1663C;
+}
+.introduction {
+	display: flex;
+	align-items: center;
+}
+.introduction figure {
+	flex: 1
+}
+.introduction img {
+	display: block;
+	margin: auto;
+	width: 80%;
+}
+
+.introduction article {
+	flex: 1
+}
+.introduction h2 {
+	margin-bottom: 1em;
+}
+
+.introduction p {
+	margin-bottom: 0.5em;
+}
+.portfolio h2 {
+	text-align: center;
+	margin-bottom: 1em;
+}
+.gallery {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-column-gap: 20px;
+	grid-row-gap: 20px;
+}
+
+.gallery img {
+	width: 100%;
+
+}
+.contact {
+	width: 50%;
+	margin: auto;
+}
+.contact > * {
+	text-align: center;
+
+}
+.contact h2{
+	margin-bottom: 20px;
+}
+.contact form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+.contact input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+.contact label {
+	margin: 2em 0 1em 0;
+}
+.contact textarea {
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+.conexion {
+	width: 50%;
+	margin: auto;
+}
+.conexion>* {
+	text-align: center;
+	display: block;
+}
+.conexion h2 {
+	margin-bottom: 20px;
+}
+.conexion form {
+	text-align: left;
+	margin-top: 30px;
+	display: flex;
+	flex-direction: column;
+}
+.conexion label {
+	margin: 2em 0 1em 0;
+}
+.conexion input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+.conexion a {
+	color:black;
+}
+
+input[type="submit"]{
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	margin : 2em auto ;
+	width: 180px;
+	text-align: center;
+	border-radius: 60px ;
+}
+footer {
+	background-color: white;
+	padding: 2em;
+}
+footer nav ul {
+	display: flex;
+	justify-content: flex-end;
+	margin: auto;
+	max-width: 1240px;
+}
+
+/*---------------------------------*/
+.title-and-modify {
+	position: relative;
+}
+.title-and-modify__title {
+	display: block;
+	width: fit-content;
+	margin: auto;
+}
+.title-and-modify__modify {
+	position: absolute;
+	top: 0;
+	display: flex;
+	gap: 5px;
+	border: none;
+	background: none;
+	align-items: center;
+	margin: 0.5em 1em;
+}
+
+.filter{
+	display: flex;
+	justify-content: center;
+	width: 60%;
+	margin: auto;
+	/* min-width: 650px; */
+	flex-wrap: wrap;
+	margin-bottom: 2em;
+}
+
+.filter__button{
+	font-family: 'Syne';
+	font-weight: 700;
+	font-size: 1.2em;
+	color: #1D6154;
+	margin: 2em auto;
+	text-align: center;
+	border: 1px solid #1D6154;
+	border-radius: 60px;
+	padding: 12px 20px;
+	min-width: 100px;
+	width: fit-content;
+}
+
+.filter__button--active{
+	background-color: #1D6154;
+	color: white;
+}
+/*---------------------------------*/
+.gallery-manager-window__content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 75%;
+	width:70%;
+	justify-content: space-between;
+}
+
+.gallery-manager-window__content hr {
+	height: 0px;
+	width: 100%;
+	border: 1px solid #B3B3B3;
+	margin-top: 50px;
+}
+
+.gallery-manager-window__content h3{
+	padding-bottom: 30px;
+	font-size: 26px;
+}
+
+.gallery-manager-window__content__green-button {
+	font-family: 'Syne';
+	font-weight: 700;
+	font-size: 1.2em;
+	background-color: #1D6154;
+	color: white;
+	margin: 2em auto;
+	text-align: center;
+	border: 1px solid #1D6154;
+	border-radius: 60px;
+	padding: 12px 20px;
+	min-width: 200px;
+	width: fit-content;
+}
+
+.gallery-manager-window__delete-work {
+
+}
+
+.gallery-manager-window__delete-work__grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-gap: 2em 1em;
+	justify-content: center;
+}
+
+.gallery-manager-window__delete-work__work {
+	position: relative;
+}
+
+.gallery-manager-window__delete-work__work__img {
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+}
+
+.gallery-manager-window__delete-work__work__delete-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 35%;
+	height: 25%;
+	margin: 5px;
+	background: black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.gallery-manager-window__delete-work__work__delete-button img{
+	filter: brightness(1);
+}
+
+.gallery-manager-window__nav {
+	top: 0;
+	position: absolute;
+	width: 100%;
+}
+.gallery-manager-window__nav__button {
+	position: absolute;
+	margin: 32px;
+	background-color: unset;
+	border: none;
+}
+.gallery-manager-window__nav__return {
+	left: 0;
+}
+.gallery-manager-window__nav__close {
+	right: 0;
+}
+
+.gallery-manager-window__add-work{
+
+}
+
+.gallery-manager-window__add-work__addimage{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	background-color: #E8F1F6;
+	border-radius: 3px;
+	height: 16dvh;		
+}
+
+.gallery-manager-window__add-work__addimage__label {
+	box-shadow: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	margin: 0 !important;
+}
+
+.gallery-manager-window__add-work__addimage__icon {}
+
+.gallery-manager-window__add-work__addimage__text {
+	color: #306685;
+	background-color: #CBD6DC;
+	border-radius: 50px;
+	padding: 12px 30px;
+	margin: 10px;
+	font-weight: 500;
+	font-family: 'Work Sans';
+	font-size: 14px;
+}
+
+.gallery-manager-window__add-work__addimage__desc {
+	color: #444444;
+	font-size: 10px;
+}
+
+.gallery-manager-window__add-work form {
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.gallery-manager-window__add-work label {
+	margin: 2em 0 1em 0;
+}
+.gallery-manager-window__add-work input,select {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
