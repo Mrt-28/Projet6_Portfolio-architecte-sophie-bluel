@@ -13,15 +13,12 @@ const conexionButon = document.querySelector(".header__login");
 const conexionForm = document.querySelector(".conexion__form");
 
 conexionButon.addEventListener("click", () => {
-    const footer = document.querySelector("#footer");
     if (!conected){
         if (document.querySelector(".conexion").classList.contains("hidden")) {
             displayConexionForm(true);
-            footer.classList.add("footer-conexion");
         }
         else {
             displayConexionForm(false);
-            footer.classList.remove("footer-conexion");
         }
     }
     else{
@@ -79,6 +76,7 @@ function displayConexionForm(display = false) {
     const sectionPortfolio = document.querySelector(".portfolio");
     const sectionContact = document.querySelector(".contact");
     const conexionForm = document.querySelector(".conexion");
+    const footer = document.querySelector("footer");
 
     if (!display) {
         conexionButon.style.fontWeight = 400;
@@ -86,6 +84,7 @@ function displayConexionForm(display = false) {
         sectionPortfolio.classList.remove("hidden");
         sectionContact.classList.remove("hidden");
         conexionForm.classList.add("hidden");
+        footer.classList.remove("footer-conexion");
     }
     else {
         conexionButon.style.fontWeight = 600;
@@ -93,6 +92,7 @@ function displayConexionForm(display = false) {
         sectionPortfolio.classList.add("hidden");
         sectionContact.classList.add("hidden");
         conexionForm.classList.remove("hidden");
+        footer.classList.add("footer-conexion");
     }
 }
 
@@ -191,9 +191,20 @@ function displayOverlayAndFormIO(displayed = false) {
 
 const generateGalleryManager = {
     // Ref for accec at galleryManagement, addWorkBlock, navBar
-    returnButton:null,
-    galleryManagement:null,
-    addWorkBlock:null,
+    returnButton: null,
+    galleryManagement: null,
+    addWorkBlock: null,
+    // Ref for addWorkForm
+    addWorkForm:{
+        imageInputFile: null, 
+        titleInput: null, 
+        categorySelect: null, 
+        defaultOption: null, 
+        imageInputBlock: null, 
+        imageInputIcon: null,
+        imageInputText: null,
+        imageInputDesc: null,      
+    },
 
     generateNavBar: function(modifyModeContent) {
         // Create the nav bar for the modal
@@ -215,6 +226,7 @@ const generateGalleryManager = {
                 this.galleryManagement.classList.remove("hidden"); // Show the gallery management block
                 this.addWorkBlock.classList.add("hidden"); // Hide the add work form block
                 returnButton.classList.add("hidden"); // Hide the return button
+                this.resetWorkAdderForm();
             });
 
         returnButton.classList.add("hidden"); // Hide the return button at first
@@ -234,6 +246,12 @@ const generateGalleryManager = {
 
             closeButton.addEventListener("click", () => {
                 displayOverlayAndFormIO(false); // Hide the overlay and form
+                if(!returnButton.classList.contains("hidden")){
+                    this.galleryManagement.classList.remove("hidden"); // Show the gallery management block
+                    this.addWorkBlock.classList.add("hidden"); // Hide the add work form block
+                    returnButton.classList.add("hidden"); // Hide the return button
+                }
+                this.resetWorkAdderForm();
             });
 
         const modifyModeOverlay = document.querySelector(".galery-manager-overlay");
@@ -498,23 +516,15 @@ const generateGalleryManager = {
             // Check if corect value is entered on each input whit regex
             const regexTitle = new RegExp("^[a-zA-Z0-9À-ÿ\\s\\-_,.!?'\\\"]{3,100}$");
             if ( regexTitle.test(titleInput.value) && categorySelect.value > 0 && categorySelect.value < categoriesData.length){
+                // Send data to the server
                 const formData = new FormData();
                 formData.append("title", titleInput.value);
                 formData.append("image", chargedFile);
                 formData.append("category", categorySelect.value);
                 const data = await postRessource(formData, localStorage.getItem("userId"), localStorage.getItem("token"));
-                // Reset the form
-                imageInputFile.value = "";
-                titleInput.value = "";
-                categorySelect.value = "";
-                defaultOption.selected = true;
-                if (imageInputBlock.lastChild.tagName === "IMG") {
-                    imageInputBlock.removeChild(imageInputBlock.lastChild); // Remove the preview image
-                }
 
-                imageInputIcon.classList.remove("hidden");
-                imageInputText.classList.remove("hidden");
-                imageInputDesc.classList.remove("hidden");
+                // Reset the form
+                this.resetWorkAdderForm();
 
                 // Reload data and redraw the galery and the galery deleter 
                 worksData = await getRessource("http://localhost:5678/api/works");
@@ -522,13 +532,36 @@ const generateGalleryManager = {
                 redrawGallery();
             }
             else{
+                alert("Formulaire non valide");
                 console.log("Formulaire non valide")
             }
         });
+        this.addWorkForm.imageInputFile = imageInputFile;
+        this.addWorkForm.titleInput = titleInput;
+        this.addWorkForm.categorySelect = categorySelect;
+        this.addWorkForm.defaultOption = defaultOption;
+        this.addWorkForm.imageInputBlock = imageInputBlock;
+        this.addWorkForm.imageInputIcon = imageInputIcon;
+        this.addWorkForm.imageInputText = imageInputText;
+        this.addWorkForm.imageInputDesc = imageInputDesc;    
+
         addWorkForm.appendChild(submitButton);
 
         addWorkBlock.classList.add("hidden"); // Hide the form at first       
         modifyModeContent.appendChild(addWorkBlock);
+    },
+    resetWorkAdderForm: function(){
+        this.addWorkForm.imageInputFile.value = "";
+        this.addWorkForm.titleInput.value = "";
+        this.addWorkForm.categorySelect.value = "";
+        this.addWorkForm.defaultOption.selected = true;
+        if (this.addWorkForm.imageInputBlock.lastChild.tagName === "IMG") {
+            this.addWorkForm.imageInputBlock.removeChild(this.addWorkForm.imageInputBlock.lastChild); // Remove the preview image
+        }
+
+        this.addWorkForm.imageInputIcon.classList.remove("hidden");
+        this.addWorkForm.imageInputText.classList.remove("hidden");
+        this.addWorkForm.imageInputDesc.classList.remove("hidden");
     }
 }
 
