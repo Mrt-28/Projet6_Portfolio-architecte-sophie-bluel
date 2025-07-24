@@ -269,7 +269,11 @@ footer nav ul {
 	margin: auto;
 	max-width: 1240px;
 }
-
+.footer-conexion {
+	position: absolute;
+	bottom: 0;
+	width: calc(100% - 4em);
+}
 /*---------------------------------*/
 .title-and-modify {
 	position: relative;
