@@ -1,4 +1,4 @@
-import { getRessource } from "./request.js";
+import { getRessource, postRessource, deleteRessource } from "./request.js";
 
 const categoriesData = await getRessource("http://localhost:5678/api/categories");
 const worksData      = await getRessource("http://localhost:5678/api/works");
@@ -49,9 +49,14 @@ function login(userId, token) {
     conected = true;
     localStorage.setItem("userId", userId);
     localStorage.setItem("token", token);
-    clearConexionForm();
+    //clearConexionForm();
     enableEditionMode();
     conexionButon.textContent = "Logout";
+
+    const modifyModeContent = document.querySelector(".gallery-manager-window");
+    generateGalleryManager.generateNavBar(modifyModeContent);
+    generateGalleryManager.generateWorkDeleter(modifyModeContent, worksData);
+    generateGalleryManager.generateWorksAdder(modifyModeContent, categoriesData);
 }
 
 function logout() {
@@ -60,6 +65,11 @@ function logout() {
     localStorage.removeItem("token");
     unenableEditionMode();    
     conexionButon.textContent = "Login";
+    const modifyModeContent = document.querySelector(".gallery-manager-window");
+    const modalChildrens = modifyModeContent.children;
+    for (let i = modalChildrens.length - 1; i >= 0; i--) {
+        modifyModeContent.removeChild(modalChildrens[i]);
+    }
 }
 /*-----------------------------------------*/
 // Display modify button and modify barre 
@@ -172,11 +182,334 @@ function displayOverlayAndFormIO(displayed = false) {
         modifyModeOverlay.classList.remove("hidden");
         modifyModeContent.classList.remove("hidden");
 
-        generateGalleryManagement(modifyModeContent);
+        //generateGalleryManagement(modifyModeContent);
     }
 }
 
+const generateGalleryManager = {
+    // Ref for acced at galleryManagement, addWorkBlock, navBar
+    returnButton:null,
+    galleryManagement:null,
+    addWorkBlock:null,
+    generateNavBar: function(modifyModeContent) {
+        // Create the nav bar for the modal
+        const navBar = document.createElement("nav");
+        navBar.classList.add("gallery-manager-window__nav");
 
+        const returnButton = document.createElement("button");
+        this.returnButton = returnButton;
+        returnButton.classList.add("gallery-manager-window__nav__return");
+        returnButton.classList.add("gallery-manager-window__nav__button");
+
+        const returnButtonImg = document.createElement("img");
+        Object.assign(returnButtonImg, {
+            src: "assets/icons/arrow-left.svg",
+            alt: "Retour à la galerie"
+        });
+
+            returnButton.addEventListener("click", () => {
+                this.galleryManagement.classList.remove("hidden"); // Show the gallery management block
+                this.addWorkBlock.classList.add("hidden"); // Hide the add work form block
+                returnButton.classList.add("hidden"); // Hide the return button
+            });
+
+        returnButton.classList.add("hidden"); // Hide the return button at first
+
+        returnButton.appendChild(returnButtonImg);
+        navBar.appendChild(returnButton);
+
+        const closeButton = document.createElement("button");
+        closeButton.classList.add("gallery-manager-window__nav__close");
+        closeButton.classList.add("gallery-manager-window__nav__button");
+
+        const closeButtonImg = document.createElement("img");
+        Object.assign(closeButtonImg, {
+            src: "assets/icons/xmark.svg",
+            alt: "Fermer la modale"
+        });
+
+            closeButton.addEventListener("click", () => {
+                displayOverlayAndFormIO(false); // Hide the overlay and form
+            });
+
+        const modifyModeOverlay = document.querySelector(".galery-manager-overlay");
+        const modifyModeWindow = document.querySelector(".gallery-manager-window");
+
+            modifyModeOverlay.addEventListener("click", (event) => {
+                if (event.target.classList.contains("galery-manager-overlay")) {
+                    displayOverlayAndFormIO(false); // Hide the overlay and form
+                }
+
+            });
+
+
+        closeButton.appendChild(closeButtonImg);
+        navBar.appendChild(closeButton);
+
+        modifyModeContent.appendChild(navBar);
+    },
+    generateWorkDeleter: function(modifyModeContent, worksData) {
+        // Create the block for manage the gallery
+        const galleryManagement = document.createElement("div");
+        this.galleryManagement = galleryManagement;
+        galleryManagement.classList.add("gallery-manager-window__content");
+        galleryManagement.classList.add("gallery-manager-window__delete-work");
+
+        const galleryManagementTitle = document.createElement("h3");
+        galleryManagementTitle.textContent = "Galerie photo";
+        galleryManagement.appendChild(galleryManagementTitle);
+
+        const galleryManagementGrid = document.createElement("div");
+        galleryManagementGrid.classList.add("gallery-manager-window__delete-work__grid");
+        galleryManagement.appendChild(galleryManagementGrid);
+
+        worksData.forEach(work => {
+            const workElement = document.createElement("figure");
+            workElement.classList.add("gallery-manager-window__delete-work__work");
+
+            const imageElement = document.createElement("img");
+            Object.assign(imageElement, {
+                src: work.imageUrl.toString(), // toString() maybe useless here, maybe do other for security
+                alt: work.title.toString()
+            });
+            imageElement.classList.add("gallery-manager-window__delete-work__work__img");
+            workElement.appendChild(imageElement);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.classList.add("gallery-manager-window__delete-work__work__delete-button");
+            // add id of th image in a data-id
+            deleteButton.setAttribute("data-id", work.id);
+            workElement.appendChild(deleteButton);
+
+            const imgDeleleteButton = document.createElement("img");
+            Object.assign(imgDeleleteButton, {
+                src: "assets/icons/trash.svg",
+                alt: "Supprimer le projet"
+            });
+            deleteButton.appendChild(imgDeleleteButton);
+
+            deleteButton.addEventListener("click", async () => {
+                const workId = deleteButton.getAttribute("data-id");
+                try {
+                    const data = await deleteRessource(workId, localStorage.getItem("userId"), localStorage.getItem("token"));
+                } catch (error) {
+                    console.error("Error deleting work:", error);
+                    alert("Erreur lors de la suppression de la photo : " + error.message);
+                }
+            });
+
+            galleryManagementGrid.appendChild(workElement);
+        });
+
+        const galleryManagementSeparator = document.createElement("hr");
+        galleryManagement.appendChild(galleryManagementSeparator);
+
+        const addWorkButton = document.createElement("button");
+        addWorkButton.classList.add("gallery-manager-window__content__green-button");
+        addWorkButton.textContent = "Ajouter une photo";
+
+        addWorkButton.addEventListener("click", () => {
+            galleryManagement.classList.add("hidden"); // Hide the gallery management block
+            this.addWorkBlock.classList.remove("hidden"); // Show the add work form block
+            this.returnButton.classList.remove("hidden"); // Show the return button
+        });
+
+        galleryManagement.appendChild(addWorkButton);
+
+        modifyModeContent.appendChild(galleryManagement);
+    },
+    generateWorksAdder: function(modifyModeContent, categoriesData) {
+        // Create the block for add a new work
+        const addWorkBlock = document.createElement("div");
+        this.addWorkBlock = addWorkBlock;
+        addWorkBlock.classList.add("gallery-manager-window__content");
+        addWorkBlock.classList.add("gallery-manager-window__add-work");
+
+        const addWorkTitle = document.createElement("h3");
+        addWorkTitle.textContent = "Ajout photo";
+        addWorkBlock.appendChild(addWorkTitle);
+
+        const addWorkForm = document.createElement("form");
+        addWorkBlock.appendChild(addWorkForm);
+
+        const imageInputBlock = document.createElement("div");
+        imageInputBlock.classList.add("gallery-manager-window__add-work__addimage");
+
+        const imageInputLabel = document.createElement("label"); // Use label for styling the input image_add-work
+        imageInputLabel.setAttribute("for", "image_add-work");
+        imageInputLabel.classList.add("gallery-manager-window__add-work__addimage__label");
+
+        const imageInputFile = document.createElement("input");
+        Object.assign(imageInputFile, {
+            id: "image_add-work",
+            name: "image_add-work",
+            type: "file",
+            accept: ".jpg, .jpeg, .png"
+        });
+
+        Object.assign(imageInputFile.style, {
+            opacity: "0",
+            position: "absolute",
+            width: "0"
+        });
+          
+        let chargedFile = null ;
+
+        imageInputFile.addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                if (imageInputBlock.lastChild.tagName === "IMG") {
+                    imageInputBlock.removeChild(imageInputBlock.lastChild); // Remove the preview image if no file is selected
+                }
+
+                const maxSizeMB = 4; 
+                const fileSizeMB = file.size / (1024 * 1024);
+
+                if (fileSizeMB > maxSizeMB) {
+                    alert(`L'image dépasse la taille maximale de ${maxSizeMB} Mo.`);
+                    imageInput.value = ""; // Réinitialise le champ
+                    return;
+                } else {
+                    console.log("Image acceptée :", file.name, fileSizeMB.toFixed(2), "Mo");
+                    chargedFile = event.target.files[0];
+                }
+
+                const previewImage = document.createElement("img");
+                Object.assign(previewImage, {
+                    src: URL.createObjectURL(file),
+                    alt: "Aperçu de l'image",
+                });
+                previewImage.style.height = "100%";
+
+                imageInputIcon.classList.add("hidden");
+                imageInputText.classList.add("hidden");
+                imageInputDesc.classList.add("hidden");
+
+                imageInputBlock.appendChild(previewImage);
+            }
+            else {
+                if (imageInputBlock.lastChild.tagName === "IMG") {
+                    imageInputBlock.removeChild(imageInputBlock.lastChild); // Remove the preview image if no file is selected
+                }
+
+                imageInputIcon.classList.remove("hidden");
+                imageInputText.classList.remove("hidden");
+                imageInputDesc.classList.remove("hidden");
+                console.log("no image selected yet");
+            }
+        });
+
+        const imageInputIcon = document.createElement("img");
+        imageInputIcon.src = "assets/icons/imgicon.svg";
+        imageInputIcon.alt = "Ajouter une photo";
+        imageInputIcon.classList.add("gallery-manager-window__add-work__addimage__icon");
+
+        const imageInputText = document.createElement("p");
+        imageInputText.classList.add("gallery-manager-window__add-work__addimage__text");
+        imageInputText.textContent = "+ Ajouter photo";
+
+        const imageInputDesc = document.createElement("p");
+        imageInputDesc.classList.add("gallery-manager-window__add-work__addimage__desc");
+        imageInputDesc.textContent = "jpg, png : 4mo max";
+
+        imageInputBlock.required = true;
+
+        imageInputBlock.appendChild(imageInputLabel);
+        imageInputBlock.appendChild(imageInputFile);
+        imageInputBlock.appendChild(imageInputIcon);
+        imageInputBlock.appendChild(imageInputText);
+        imageInputBlock.appendChild(imageInputDesc);
+
+        addWorkForm.appendChild(imageInputBlock);
+
+        const titleLabel = document.createElement("label");
+        titleLabel.setAttribute("for", "title");
+        titleLabel.textContent = "Titre";
+        addWorkForm.appendChild(titleLabel);
+
+        const titleInput = document.createElement("input");
+        Object.assign(titleInput, {
+            id: "title",
+            name: "title",
+            type: "text",
+            required: true
+        });
+        addWorkForm.appendChild(titleInput);
+
+        const categoryLabel = document.createElement("label");
+        categoryLabel.setAttribute("for", "category");
+        categoryLabel.textContent = "Catégorie";
+        addWorkForm.appendChild(categoryLabel);
+
+        const categorySelect = document.createElement("select");
+        Object.assign(categorySelect, {
+            id: "category",
+            name: "category",
+            required: true
+        });
+        const defaultOption = document.createElement("option");
+        Object.assign(defaultOption, {
+            textContent: "",
+            disabled: true,
+            selected: true
+        });
+        categorySelect.appendChild(defaultOption);
+
+        categoriesData.forEach(category => {
+            if (category.name !== "Tous") {
+                const option = document.createElement("option");
+                option.value = category.id;
+                option.textContent = category.name;
+                categorySelect.appendChild(option);
+            }
+        });
+        addWorkForm.appendChild(categorySelect);
+
+        const addWorkFormSeparator = document.createElement("hr");
+        addWorkForm.appendChild(addWorkFormSeparator);
+
+        const submitButton = document.createElement("button");
+        submitButton.classList.add("gallery-manager-window__content__green-button");
+        submitButton.type = "submit";
+        submitButton.textContent = "Valider";
+
+        submitButton.addEventListener("click", async (event) => {
+            event.preventDefault();
+            // Here you can add the code to send the form data to the server
+            // TODO: Implement the API call to add the new work
+            console.log("Form submitted");
+            console.log("Image URL:", imageInputFile.value);
+            console.log("Title:", titleInput.value);
+            console.log("Category ID:", categorySelect.value);
+            // Check if corect value is entered on each input whit regex
+            const regexTitle = new RegExp("^[a-zA-Z0-9À-ÿ\\s\\-_,.!?'\\\"]{3,100}$");
+            if ( regexTitle.test(titleInput.value) && categorySelect.value > 0 && categorySelect.value < categoriesData.length){
+                const formData = new FormData();
+                formData.append("title", titleInput.value);
+                formData.append("image", chargedFile);
+                formData.append("category", categorySelect.value);
+                const data = await postRessource(formData, localStorage.getItem("userId"), localStorage.getItem("token"));
+                // Reset the form
+                imageInputFile.value = "";
+                titleInput.value = "";
+                categorySelect.value = "";
+                defaultOption.selected = true;
+                if (imageInputBlock.lastChild.tagName === "IMG") {
+                    imageInputBlock.removeChild(imageInputBlock.lastChild); // Remove the preview image if no file is selected
+                }
+            }
+            else{
+                console.log("Formulaire non valide")
+            }
+        });
+
+        addWorkForm.appendChild(submitButton);
+
+        addWorkBlock.classList.add("hidden"); // Hide the form at first
+        
+        modifyModeContent.appendChild(addWorkBlock);
+    }
+}
 
 function generateGalleryManagement(modifyModeContent) {
     // Need two div one for display all work with a button for delete them and one for the form for add a new work
